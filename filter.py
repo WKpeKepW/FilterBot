@@ -2,7 +2,6 @@ from mpsiemlib.common import Settings, Creds, MPSIEMAuth
 from mpsiemlib.modules import Filters, EventsAPI
 import json
 import time
-import traceback
 
 class Filter:
     def __init__(self, namePlatform):
