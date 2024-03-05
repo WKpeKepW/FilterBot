@@ -41,7 +41,7 @@ class Programm():
         while i < len(credsJson):
             name = credsJson[i]["name"]
             filters.append(Filter(name))
-            thr.append(threading.Thread(target=filters[i].QueryDowngrade, args=(filter, timeFrom,)))
+            thr.append(threading.Thread(target=filters[i].QueryDowngrade, args=(filter, timeFrom, timeTo,)))
             thr[i].start()
             i += 1
         List = list()
