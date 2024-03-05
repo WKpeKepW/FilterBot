@@ -7,6 +7,7 @@ import traceback
 class Filter:
     def __init__(self, namePlatform):
         print("constructor")
+        self.name = namePlatform
         creds = Creds()
         creds.core_auth_type = 0
         listCred = self.__CredsPlatformIndex(namePlatform)

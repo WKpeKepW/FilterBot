@@ -48,7 +48,7 @@ class Programm():
         k = 0
         while k < i:
             thr[k].join()
-            List.append(self.parseResponse(name, filters[k].Return))
+            List.append(self.parseResponse(filters[k].name, filters[k].Return))
             k += 1
         return List
 
