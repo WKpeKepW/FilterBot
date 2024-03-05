@@ -2,6 +2,7 @@ from mpsiemlib.common import Settings, Creds, MPSIEMAuth
 from mpsiemlib.modules import Filters, EventsAPI
 import json
 import time
+import traceback
 
 class Filter:
     def __init__(self, namePlatform):
@@ -19,17 +20,34 @@ class Filter:
         query = EventsAPI(self.auth,Settings())
         UtimeTo = self.__TimeUnix(timeTo)
         UtimeFrom = self.__TimeUnix(timeFrom)
-        Return = query.get_aggregation_events_by_filter( filter=filter,
-                                                #aggregateBy = [{"function": "COUNT", "field": "*", "unique": False}],
-                                                aggregate_fields=aggrField,
-                                                aggregate_function=aggrFunc,
-                                                groupBy=groupBy,
-                                                time_from=UtimeFrom,
-                                                time_to=UtimeTo,
-                                                period=period
-                                               )
+        try:
+            Return = query.get_aggregation_events_by_filter(filter=filter,
+                                                    #aggregateBy = [{"function": "COUNT", "field": "*", "unique": False}],
+                                                    aggregate_fields=aggrField,
+                                                    aggregate_function=aggrFunc,
+                                                    groupBy=groupBy,
+                                                    time_from=UtimeFrom,
+                                                    time_to=UtimeTo,
+                                                    period=period
+                                                    )
+        except Exception as err:
+            Return = err #traceback.format_exc()
         query.close()
         return Return
+    
+    def QueryDowngrade(self, filter, timeFrom, timeTo = None):
+        query = EventsAPI(self.auth,Settings())
+        UtimeTo = self.__TimeUnix(timeTo)
+        UtimeFrom = self.__TimeUnix(timeFrom)
+        try:
+            self.Return = query.get_count_events_by_filter(filter=filter,
+                                                    time_from=UtimeFrom,
+                                                    time_to=UtimeTo,
+                                                    )
+        except Exception as err:
+            self.Return = err #traceback.format_exc()
+        query.close()
+
 
     def FilterPDQLExemple(self, nameFilter):
         filters = Filters(self.auth,Settings())
