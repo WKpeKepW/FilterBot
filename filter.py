@@ -1,13 +1,13 @@
 from mpsiemlib.common import Settings, Creds, MPSIEMAuth 
 from mpsiemlib.modules import Filters, EventsAPI
-import json
 import time
 
 class Filter:
-    def __init__(self, namePlatform):
-        print("constructor")
+    def __init__(self, namePlatform, listcreds):
+        #print("constructor")
         self.name = namePlatform
         creds = Creds()
+        self.credsJson = listcreds
         creds.core_auth_type = 0
         listCred = self.__CredsPlatformIndex(namePlatform)
         creds.core_hostname = listCred["hostname"]
@@ -15,6 +15,10 @@ class Filter:
         creds.core_pass = listCred["pass"]
         self.auth = MPSIEMAuth(creds,Settings())
         #self.timeStruct = "%H:%M:%S %d-%m-%Y"
+        try:
+            self.auth.get_session()
+        except Exception as ass:  
+            return ass
 
     def Query(self, filter, timeFrom, groupBy = [], aggrField = "*", aggrFunc = "COUNT", period = "1d", timeTo = None):
         query = EventsAPI(self.auth,Settings())
@@ -70,10 +74,8 @@ class Filter:
             return time.time()
         
     def __CredsPlatformIndex(self, name):
-        with open('./creds/creds.json') as f:
-            credsJson = json.load(f)
         i = 0
-        while i < len(credsJson):
-            if name == credsJson[i]["name"]:
-                return credsJson[i]
+        while i < len(self.credsJson):
+            if name == self.credsJson[i]["name"]:
+                return self.credsJson[i]
             i += 1
